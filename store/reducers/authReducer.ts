@@ -1,11 +1,13 @@
 export interface authStateInterface {
   userAuth: any;
   user: any;
+  userLoading: boolean;
 }
 
 const initState: authStateInterface = {
   userAuth: null,
   user: null,
+  userLoading: true,
 };
 
 const authReducer: any = (state = initState, action: any) => {

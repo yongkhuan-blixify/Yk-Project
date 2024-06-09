@@ -1,7 +1,7 @@
-import "./../node_modules/blixify-ui-web/lib/tail.css";
-// import AuthWrapper from "../store/AuthWrapper";
-// import StoreWrapper from "../store/StoreWrapper";
+import AuthWrapper from "../store/AuthWrapper";
+import StoreWrapper from "../store/StoreWrapper";
 import "../styles/globals.css";
+import "./../node_modules/blixify-ui-web/lib/tail.css";
 
 export default function RootLayout({
   children,
@@ -12,9 +12,9 @@ export default function RootLayout({
     <html>
       <body>
         <title>Cookbook Junction</title>
-        {/* <StoreWrapper>
+        <StoreWrapper>
           <AuthWrapper>{children}</AuthWrapper>
-        </StoreWrapper> */}
+        </StoreWrapper>
         {children}
       </body>
     </html>
