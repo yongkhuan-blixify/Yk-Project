@@ -28,7 +28,7 @@ export interface RecipeState {
   createdOn: Date;
 }
 
-export enum RecipeTypeOption {
+enum RecipeTypeOption {
   BREAKFAST = "Breakfast",
   SOUP = "Soup",
   GRILLED = "Grilled",

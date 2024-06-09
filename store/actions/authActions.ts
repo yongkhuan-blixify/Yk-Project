@@ -10,15 +10,6 @@ export const handleSignOut = async () => {
   } catch (err) {}
 };
 
-// export const getUserByEmail = async (email: string) => {
-//   try {
-//     let selectedData: any = null;
-//     return selectedData;
-//   } catch (error) {
-//     return null;
-//   }
-// };
-
 export const getUserInfo = async (email: string) => {
   try {
     const userData: any = [];
