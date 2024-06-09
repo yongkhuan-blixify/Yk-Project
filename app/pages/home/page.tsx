@@ -34,7 +34,7 @@ export default function HomePage() {
     try {
       setLoading(true);
       //INFO: call the read api via this link
-      const recipeResp = await axios.get("/pages/api/read");
+      const recipeResp = await axios.get("/pages/api/read.ts");
 
       console.log(recipeResp);
 
