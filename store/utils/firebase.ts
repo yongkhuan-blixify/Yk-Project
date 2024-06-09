@@ -26,13 +26,13 @@ interface FirebaseConfig {
 }
 
 const firebaseConfig: FirebaseConfig = {
-  apiKey: "AIzaSyCsV3BSpbbg3HPB4NoOvFkz6crretqf-vU",
-  authDomain: "cookbook-junction.firebaseapp.com",
-  projectId: "cookbook-junction",
-  storageBucket: "cookbook-junction.appspot.com",
-  messagingSenderId: "627989662854",
-  appId: "1:627989662854:web:c6cbdea1e6f84d52ef5507",
-  measurementId: "G-K1CMHQVWWS",
+  apiKey: process.env.NEXT_PUBLIC_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_AUTH_DOMAIN,
+  projectId: process.env.NEXT_PUBLIC_PROJECT_ID,
+  storageBucket: process.env.NEXT_PUBLIC_STORAGE_BUCKET,
+  messagingSenderId: process.env.NEXT_PUBLIC_SENDER_ID,
+  appId: process.env.NEXT_PUBLIC_APP_ID,
+  measurementId: process.env.NEXT_PUBLIC_MEASUREMENT_ID,
 };
 
 let fbClient: any;
