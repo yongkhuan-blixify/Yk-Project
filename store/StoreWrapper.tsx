@@ -14,7 +14,7 @@ const middleware = [thunk];
 export const store = createStore(
   rootReducer,
   initialState,
-  compose(applyMiddleware(...(middleware as any)))
+  compose(applyMiddleware(...middleware))
 );
 
 interface Props {
