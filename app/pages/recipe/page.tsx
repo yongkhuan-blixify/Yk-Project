@@ -29,8 +29,8 @@ export default function RecipePage() {
         </Text>
         <Text size="base" type="h1" className="mt-5 text-white">
           This is a dedicated space where you can easily save and organize all
-          the recipes you love. Whether you’ve found a family favorite or
-          discovered a new dish that you can't wait to try, My Recipe Book
+          the recipes you love. Whether you have found a family favorite or
+          discovered a new dish that you cannot wait to try, My Recipe Book
           ensures you have all your culinary treasures in one convenient place.
         </Text>
 

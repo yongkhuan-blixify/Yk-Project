@@ -267,7 +267,7 @@ export default function RecipeEditorPage() {
         </Text>
         <Text size="base" type="h1" className="mt-5 text-white">
           This page is designed to help you bring your recipes to life and share
-          them with our vibrant community. Whether you're a seasoned chef or a
+          them with our vibrant community. Whether you are a seasoned chef or a
           home cook with a passion for food, Recipe Editor makes it easy to
           document your dishes and inspire others. Share your ultimate recipe
           with everyone!

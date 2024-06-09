@@ -1,9 +1,4 @@
-import {
-  getAnalytics,
-  isSupported,
-  logEvent,
-  setUserId,
-} from "firebase/analytics";
+import { getAnalytics, isSupported, setUserId } from "firebase/analytics";
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
 import { getFirestore } from "firebase/firestore";
