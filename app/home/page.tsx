@@ -68,7 +68,7 @@ function HomePage(props: Props) {
   }, [handleGetRecipeList, searchRecipe]);
 
   useEffect(() => {
-    if (props.authStore.user) setUserName(props.authStore.user.userName);
+    if (props.authStore.user) setUserName(props.authStore.user?.userName);
   }, [props.authStore.user]);
 
   const handlePagination = (value: string | number) => {

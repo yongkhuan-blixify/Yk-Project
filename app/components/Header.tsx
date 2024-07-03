@@ -26,8 +26,8 @@ function CustomHeader(props: Props) {
   ];
 
   const handleSignOut = async () => {
-    await signOut();
     router.push("/");
+    await signOut();
   };
 
   return (
@@ -39,7 +39,7 @@ function CustomHeader(props: Props) {
       navigation={navigation}
       userNavigation={userNavigation}
       user={{
-        name: props.authStore.user.userName,
+        name: props.authStore.user ? props.authStore.user.userName : "-",
         email: "",
         image: UserIcon.src,
       }}
