@@ -1,20 +1,18 @@
 // import { UserModel } from "app/models/User";
 // import moment from "moment";
+import axios from "axios";
 import { fbClient as firebase } from "../utils/firebase";
 
 let unsubscribeAuthListener: any = null;
 
 export const getUserInfo = async (id: string) => {
   try {
-    // const userData: any = [];
-    // if (userData) {
-    //   const user: UserModel = {
-    //     name: userData.name,
-    //     phone: userData.phone,
-    //   };
-    //   return id;
-    // }
-    return id;
+    const userInfoResp = await axios.post("/api/readAPI", {
+      collectionName: "user",
+      documentId: id,
+    });
+
+    return userInfoResp.data;
   } catch (err) {}
 };
 
@@ -25,17 +23,14 @@ export const getAuthListener = () => {
         .auth()
         .onAuthStateChanged(async (user: any) => {
           if (user) {
-            console.log(user);
             try {
               let userData = await getUserInfo(user.uid);
-              console.log(userData);
               if (userData) {
-                console.log("1");
                 dispatch({
                   type: "UPDATE_USER_AUTH",
                   payload: {
-                    user: user.uid,
-                    userAuth: user.uid,
+                    user: userData,
+                    userAuth: user.auth,
                   },
                 });
               } else throw "Error";
@@ -83,12 +78,7 @@ export const resetPassword = async (email: string) => {
 
 export const signInWithEmail = async (email: string, password: string) => {
   try {
-    const response = await firebase
-      .auth()
-      .signInWithEmailAndPassword(email, password);
-
-    console.log(response);
-    // return response;
+    await firebase.auth().signInWithEmailAndPassword(email, password);
   } catch (err) {
     return "Your email or password may be incorrect, please try again";
   }

@@ -5,23 +5,14 @@ import { EmptyState } from "blixify-ui-web/lib/components/display/emptyState";
 import { Container } from "blixify-ui-web/lib/components/structure/container";
 import { Text } from "blixify-ui-web/lib/components/structure/text";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
 import CustomHeader from "../components/Header";
 
 export default function RecipePage() {
-  const [userName, setUserName] = useState<string>("");
   const router = useRouter();
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const storedUserName = localStorage.getItem("userName");
-      setUserName(storedUserName ? storedUserName : "");
-    }
-  }, []);
 
   return (
     <div className="bg-black w-screen h-screen">
-      <CustomHeader userName={userName} page="My Recipe Book" />
+      <CustomHeader page="My Recipe Book" />
 
       <Container className="pb-20" bgColor="bg-black">
         <Text size="4xl" type="h1" className="font-extrabold text-white mt-10">

@@ -1,4 +1,5 @@
 "use client";
+import axios from "axios";
 import {
   BareSignIn,
   Loading,
@@ -119,12 +120,36 @@ export default function Home() {
 
   const handleCreateAccount = async () => {
     try {
-      console.log(userInput.email, userInput.password);
       setLoading(true);
       if ((userInput.email, userInput.password)) {
-        await signUpWithEmail(userInput.email, userInput.password);
+        const signUpResp = await signUpWithEmail(
+          userInput.email,
+          userInput.password
+        );
+
+        const updatedUserData = {
+          id: signUpResp.user.uid,
+          userName: userInput.name,
+          userEmail: userInput.email,
+        };
+
+        const collectionName = "user";
+
+        if (collectionName && updatedUserData) {
+          const response = await axios.post("/api/create", {
+            collection: collectionName,
+            data: updatedUserData,
+          });
+          if (response) {
+            setNotification({
+              type: true,
+              title: "Account Creation Successful",
+              msg: "Signing you in...",
+            });
+            router.push("/home");
+          }
+        }
       }
-      router.push("/home");
       setLoading(false);
     } catch (err) {
       setNotification({

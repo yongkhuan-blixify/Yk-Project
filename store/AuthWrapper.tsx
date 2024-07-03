@@ -18,10 +18,6 @@ const unAuthenticatedPage = ["/"];
 function AuthWrapper(props: Props) {
   const router = useRouter();
 
-  console.log(props.authStore.userLoading);
-  console.log(props.authStore.user);
-  console.log(props.authStore.userAuth);
-
   useEffect(() => {
     if (!props.authStore.userLoading) {
       if (props.authStore.userAuth) {
@@ -41,7 +37,6 @@ function AuthWrapper(props: Props) {
   }, []);
 
   if (props.authStore.userLoading) {
-    console.log("loadui");
     return null;
   } else {
     return props.children;

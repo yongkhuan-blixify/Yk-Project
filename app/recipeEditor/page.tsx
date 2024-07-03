@@ -118,10 +118,14 @@ export default function RecipeEditorPage() {
           id: id,
         };
 
-        const response = await axios.post("/api/create", updatedRecipeData);
+        const collectionName = "recipe";
+
+        const response = await axios.post("/api/create", {
+          collection: collectionName,
+          data: updatedRecipeData,
+        });
 
         if (response.data) {
-          console.log(response.data);
           setNotification({
             type: true,
             title: "Thank you for sharing your recipe!",
@@ -249,7 +253,7 @@ export default function RecipeEditorPage() {
 
   return (
     <div className="bg-black w-screen h-screen">
-      <CustomHeader userName={userName} page="Recipe Editor" />
+      <CustomHeader page="Recipe Editor" />
       <CustomNotification
         notification={notification}
         onClose={() => setNotification(null)}

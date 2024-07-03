@@ -2,19 +2,11 @@
 import { ImageGallery } from "blixify-ui-web/lib/components/design/imageGallery";
 import { Container } from "blixify-ui-web/lib/components/structure/container";
 import { Text } from "blixify-ui-web/lib/components/structure/text";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import CustomHeader from "../components/Header";
 
 export default function RandomPage() {
-  const [userName, setUserName] = useState<string>("");
   const [currentImage, setCurrentImage] = useState(0);
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const storedUserName = localStorage.getItem("userName");
-      setUserName(storedUserName ? storedUserName : "");
-    }
-  }, []);
 
   const images = [
     "https://images.unsplash.com/photo-1495214783159-3503fd1b572d?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
@@ -34,7 +26,7 @@ export default function RandomPage() {
 
   return (
     <div className="bg-black w-screen h-screen">
-      <CustomHeader userName={userName} page="Recipe of the Day" />
+      <CustomHeader page="Recipe of the Day" />
       <div>
         <ImageGallery
           imageGallery={images}

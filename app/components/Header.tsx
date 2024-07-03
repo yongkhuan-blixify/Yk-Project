@@ -1,16 +1,18 @@
 import { Disclosure, Menu, Popover, Transition } from "@headlessui/react";
 import { Header } from "blixify-ui-web/lib/components/navigation/header";
 import { useRouter } from "next/navigation";
+import { connect } from "react-redux";
+import { authStateInterface } from "store/reducers/authReducer";
 import Logo from "../../public/assets/cookbook_junction.jpg";
 import UserIcon from "../../public/assets/userIcon.jpg";
 import { handleSignOut as signOut } from "../../store/actions/authActions";
 
 interface Props {
-  userName: string;
   page: string;
+  authStore: authStateInterface;
 }
 
-export default function CustomHeader(props: Props) {
+function CustomHeader(props: Props) {
   const router = useRouter();
   const navigation = [
     { name: "Cookbook Junction", href: "/home" },
@@ -37,7 +39,7 @@ export default function CustomHeader(props: Props) {
       navigation={navigation}
       userNavigation={userNavigation}
       user={{
-        name: props.userName,
+        name: props.authStore.user.userName,
         email: "",
         image: UserIcon.src,
       }}
@@ -51,3 +53,11 @@ export default function CustomHeader(props: Props) {
     />
   );
 }
+
+const mapStateToProps = (state: any) => {
+  return {
+    authStore: state.authStore,
+  };
+};
+
+export default connect(mapStateToProps)(CustomHeader);

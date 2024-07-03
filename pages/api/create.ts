@@ -6,26 +6,24 @@ export default async function handler(
   res: NextApiResponse
 ) {
   try {
-    //INFO: Get the recipe data pass in from API
-    const recipeData = req.body;
+    const { collection, data } = req.body;
 
-    if (recipeData) {
-      //INFO: Upload the recipe data to firebase
-      const uploadFirebaseResp = await addData(
-        "recipe",
-        recipeData,
-        recipeData.id
-      );
+    if (collection && data) {
+      const uploadFirebaseResp = await addData(collection, data, data.id);
+
       if (uploadFirebaseResp) {
-        //INFO: If success return success response
-        res.status(200).json({
-          message: "Recipe successfully updated",
+        return res.status(200).json({
+          message: `${collection} data successfully updated`,
           data: uploadFirebaseResp,
         });
       }
     }
+
+    return res
+      .status(400)
+      .json({ message: "Collection and data are required" });
   } catch (err) {
-    console.log(err);
-    res.status(400).json({ message: "An error occurred", error: err });
+    console.error(err);
+    return res.status(400).json({ message: "An error occurred", error: err });
   }
 }

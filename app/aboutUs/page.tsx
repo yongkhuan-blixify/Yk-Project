@@ -4,22 +4,12 @@ import { HeroSection } from "blixify-ui-web/lib/components/design/heroSection";
 import { Container } from "blixify-ui-web/lib/components/structure/container";
 import { Text } from "blixify-ui-web/lib/components/structure/text";
 import Image from "next/image";
-import { useEffect, useState } from "react";
 import VisionImage from "../../public/assets/vision.jpg";
 
 export default function AboutUsPage() {
-  const [userName, setUserName] = useState<string>("");
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const storedUserName = localStorage.getItem("userName");
-      setUserName(storedUserName ? storedUserName : "");
-    }
-  }, []);
-
   return (
     <div className="bg-black w-screen h-screen">
-      <CustomHeader userName={userName} page="About Us" />
+      <CustomHeader page="About Us" />
       <Container className="pb-20" bgColor="bg-black">
         <HeroSection
           size="small"

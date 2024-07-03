@@ -6,7 +6,7 @@ import { Grid, GridClass } from "blixify-ui-web/lib/components/display/grid";
 import { Container } from "blixify-ui-web/lib/components/structure/container";
 import { Text } from "blixify-ui-web/lib/components/structure/text";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { authStateInterface } from "store/reducers/authReducer";
 import CustomHeader from "../components/Header";
@@ -26,29 +26,50 @@ function HomePage(props: Props) {
   const [pageIndex, setPageIndex] = useState(0);
   const [searchRecipe, setSearchRecipe] = useState("");
   const [recipeList, setRecipeList] = useState<RecipeState[]>([]);
-  // const [cursor] = useState("");
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const storedUserName = localStorage.getItem("userName");
-      setUserName(storedUserName ? storedUserName : "");
-    }
-    handleGetRecipeList();
-  }, []);
-
-  const handleGetRecipeList = async () => {
+  const handleGetRecipeList = useCallback(async () => {
     try {
       setLoading(true);
-      //INFO: call the read api via this link
-      const recipeResp = await axios.post("/api/readAPI");
+      // INFO: call the read API via this link
+      const recipeResp = await axios.post("/api/readAPI", {
+        collectionName: "recipe",
+      });
 
-      setRecipeList(recipeResp.data.data);
+      const recipeList = recipeResp.data.data
+        .filter((eachRecipe: any) =>
+          searchRecipe ? eachRecipe.recipeName.includes(searchRecipe) : true
+        )
+        .map((eachRecipe: any) => ({
+          id: eachRecipe.id,
+          createdBy: eachRecipe.createdBy,
+          createdOn: eachRecipe.createdOn,
+          recipeImage: eachRecipe.recipeImage,
+          recipeIngredient: eachRecipe.recipeIngredient,
+          recipeIntro: eachRecipe.recipeIntro,
+          recipeName: eachRecipe.recipeName,
+          recipeStep: eachRecipe.recipeStep,
+          recipeType: eachRecipe.recipeType,
+        }));
+
+      setRecipeList(recipeList);
       setLoading(false);
     } catch (err) {
       setLoading(false);
       console.log(err);
     }
-  };
+  }, [searchRecipe]);
+
+  useEffect(() => {
+    handleGetRecipeList();
+  }, [handleGetRecipeList]);
+
+  useEffect(() => {
+    handleGetRecipeList();
+  }, [handleGetRecipeList, searchRecipe]);
+
+  useEffect(() => {
+    if (props.authStore.user) setUserName(props.authStore.user.userName);
+  }, [props.authStore.user]);
 
   const handlePagination = (value: string | number) => {
     if (typeof value === "number") {
@@ -90,7 +111,7 @@ function HomePage(props: Props) {
 
   return (
     <div className="bg-black w-screen h-screen">
-      <CustomHeader userName={userName} page="Cookbook Junction" />
+      <CustomHeader page="Cookbook Junction" />
       <Container className="my-10" bgColor="bg-black">
         <div className="bg-indigo-500 w-fit rounded-lg mb-5">
           <Text size="4xl" type="h1" className="font-extrabold p-3 ">
