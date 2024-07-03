@@ -1399,10 +1399,10 @@ binary-extensions@^2.0.0:
   resolved "https://registry.yarnpkg.com/binary-extensions/-/binary-extensions-2.3.0.tgz#f6e14a97858d327252200242d4ccfe522c445522"
   integrity sha512-Ceh+7ox5qe7LJuLHoY0feh3pHuUDHAcRUeyL2VYghZwfpkNIy/+8Ocg0a3UuSoYzavmylwuLWQOf3hl0jjMMIw==
 
-blixify-ui-web@^0.1.275:
-  version "0.1.275"
-  resolved "https://registry.yarnpkg.com/blixify-ui-web/-/blixify-ui-web-0.1.275.tgz#d925af80883ebf1ab995893f464f5ca398d98b67"
-  integrity sha512-iX+y6AiCaIxAPcfpSTJnRFC5M54snutxRL0eAy8n9pnaOPM0avtG/WZdb5RHWSXbigrpSv1bslTbxzyR/QZNxw==
+blixify-ui-web@^0.1.281:
+  version "0.1.281"
+  resolved "https://registry.yarnpkg.com/blixify-ui-web/-/blixify-ui-web-0.1.281.tgz#25a88ebb350ab9e84bd5a02c401a0fdd9ec2d527"
+  integrity sha512-xSvekGKjU9Tbx3QSUaG7p8z+dA3hqq/sFqaI3TzEAyi1UvS99ujmGy1kADjrIZVEU0+XOTI1luwOHqWxeGx8mQ==
   dependencies:
     "@fullcalendar/core" "^6.1.11"
     "@fullcalendar/daygrid" "^6.1.11"

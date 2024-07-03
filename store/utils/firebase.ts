@@ -1,4 +1,4 @@
-import { getAnalytics, isSupported, setUserId } from "firebase/analytics";
+import { getAnalytics, setUserId } from "firebase/analytics";
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
 import { getFirestore } from "firebase/firestore";
@@ -39,21 +39,21 @@ fbClient = global._fbClient;
 const firestore = getFirestore(fbClient);
 const storage = getStorage(fbClient);
 
-const initializeAnalytics = async () => {
-  const isSupportedResult = await isSupported();
-  if (isSupportedResult) {
-    const analytics = getAnalytics(fbClient);
-    return analytics;
-  } else {
-    return null;
-  }
-};
+// const initializeAnalytics = async () => {
+//   const isSupportedResult = await isSupported();
+//   if (isSupportedResult) {
+//     const analytics = getAnalytics(fbClient);
+//     return analytics;
+//   } else {
+//     return null;
+//   }
+// };
 
-const handleGetAnalytics = async () => {
-  try {
-    await initializeAnalytics();
-  } catch (err) {}
-};
+// const handleGetAnalytics = async () => {
+//   try {
+//     await initializeAnalytics();
+//   } catch (err) {}
+// };
 
 export const handleSetUserId = async (userId: string) => {
   try {

@@ -3,7 +3,7 @@ import { ImageGallery } from "blixify-ui-web/lib/components/design/imageGallery"
 import { Container } from "blixify-ui-web/lib/components/structure/container";
 import { Text } from "blixify-ui-web/lib/components/structure/text";
 import { useEffect, useState } from "react";
-import CustomHeader from "../../components/Header";
+import CustomHeader from "../components/Header";
 
 export default function RandomPage() {
   const [userName, setUserName] = useState<string>("");

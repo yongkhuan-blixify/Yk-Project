@@ -1,13 +1,13 @@
 import { collection, getDocs } from "firebase/firestore";
 import { NextApiRequest, NextApiResponse } from "next";
-import { db } from "../../../firebaseService";
+import { db } from "../../firebaseService";
 
 export default async function handler(
   req: NextApiRequest, //INFO: Request
   res: NextApiResponse //INFO: Response
 ) {
   try {
-    console.log("innn");
+    console.log("API CALL");
     //INFO: Go to recipe collection on firebase
     const recipeCollection = collection(db, "recipe");
     //INFO: Get recipe data from firebase

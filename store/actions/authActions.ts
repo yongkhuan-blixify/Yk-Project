@@ -1,25 +1,20 @@
-import { UserModel } from "@/app/models/User";
-import moment from "moment";
-import { fbClient as firebase, handleSetUserId } from "../utils/firebase";
+// import { UserModel } from "app/models/User";
+// import moment from "moment";
+import { fbClient as firebase } from "../utils/firebase";
 
 let unsubscribeAuthListener: any = null;
 
-export const handleSignOut = async () => {
+export const getUserInfo = async (id: string) => {
   try {
-    await firebase.auth().signOut();
-  } catch (err) {}
-};
-
-export const getUserInfo = async (email: string) => {
-  try {
-    const userData: any = [];
-    if (userData) {
-      const user: UserModel = {
-        name: userData.name,
-        phone: userData.phone,
-      };
-      return user;
-    }
+    // const userData: any = [];
+    // if (userData) {
+    //   const user: UserModel = {
+    //     name: userData.name,
+    //     phone: userData.phone,
+    //   };
+    //   return id;
+    // }
+    return id;
   } catch (err) {}
 };
 
@@ -30,33 +25,28 @@ export const getAuthListener = () => {
         .auth()
         .onAuthStateChanged(async (user: any) => {
           if (user) {
-            handleSetUserId(user?.uid);
+            console.log(user);
             try {
-              //INFO: Monday only able to retrieve newly created item after 30 seconds via API
-              const timeStamp = JSON.parse(
-                JSON.stringify(getState().authStore.timeStamp)
-              );
-              if (moment().isAfter(moment(timeStamp).add(30, "seconds"))) {
-                let userData = await getUserInfo(user.phoneNumber);
-                if (userData) {
-                  dispatch({
-                    type: "UPDATE_USER_AUTH",
-                    payload: {
-                      user: userData,
-                      userAuth: user,
-                    },
-                  });
-                } else throw "Error";
-              } else {
+              let userData = await getUserInfo(user.uid);
+              console.log(userData);
+              if (userData) {
+                console.log("1");
                 dispatch({
                   type: "UPDATE_USER_AUTH",
                   payload: {
-                    user: getState().authStore.user,
-                    userAuth: user,
+                    user: user.uid,
+                    userAuth: user.uid,
                   },
                 });
-              }
+              } else throw "Error";
             } catch (err) {
+              dispatch({
+                type: "UPDATE_USER_AUTH",
+                payload: {
+                  user: null,
+                  userAuth: null,
+                },
+              });
               handleSignOut();
             }
           } else {
@@ -78,4 +68,45 @@ export const removeAuthListener = () => {
     unsubscribeAuthListener();
     unsubscribeAuthListener = null;
   }
+};
+
+export const resetPassword = async (email: string) => {
+  const message =
+    "Password reset link has been sent to your email if your account exists";
+  try {
+    await firebase.auth().sendPasswordResetEmail(email);
+    return message;
+  } catch (err) {
+    return message;
+  }
+};
+
+export const signInWithEmail = async (email: string, password: string) => {
+  try {
+    const response = await firebase
+      .auth()
+      .signInWithEmailAndPassword(email, password);
+
+    console.log(response);
+    // return response;
+  } catch (err) {
+    return "Your email or password may be incorrect, please try again";
+  }
+};
+
+export const signUpWithEmail = async (email: string, password: string) => {
+  try {
+    const response = await firebase
+      .auth()
+      .createUserWithEmailAndPassword(email, password);
+    return response;
+  } catch (err) {
+    return "Your email or password may be incorrect, please try again";
+  }
+};
+
+export const handleSignOut = async () => {
+  try {
+    await firebase.auth().signOut();
+  } catch (err) {}
 };

@@ -15,7 +15,6 @@ export default function RootLayout({
         <StoreWrapper>
           <AuthWrapper>{children}</AuthWrapper>
         </StoreWrapper>
-        {children}
       </body>
     </html>
   );

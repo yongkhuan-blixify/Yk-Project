@@ -1,5 +1,5 @@
 "use client";
-import CustomHeader from "../../components/Header";
+import CustomHeader from "../components/Header";
 // import { Button } from "blixify-ui-web/lib/components/action/button";
 import { Breadcrumb } from "blixify-ui-web/lib/components/navigation/breadcrumb";
 import { Container } from "blixify-ui-web/lib/components/structure/container";

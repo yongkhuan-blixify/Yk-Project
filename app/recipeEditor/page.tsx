@@ -10,12 +10,11 @@ import { Text } from "blixify-ui-web/lib/components/structure/text";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
-import { uploadImage } from "../../../firebaseService";
-import CustomHeader from "../../components/Header";
+import { uploadImage } from "../../firebaseService";
+import CustomHeader from "../components/Header";
 import CustomNotification, {
   NotificationState,
-} from "../../components/Notification";
-import CustomTextInput from "../../components/TextInput";
+} from "../components/Notification";
 
 export interface RecipeState {
   recipeName: string;
@@ -119,10 +118,7 @@ export default function RecipeEditorPage() {
           id: id,
         };
 
-        const response = await axios.post(
-          "/pages/api/create",
-          updatedRecipeData
-        );
+        const response = await axios.post("/api/create", updatedRecipeData);
 
         if (response.data) {
           console.log(response.data);
@@ -155,7 +151,7 @@ export default function RecipeEditorPage() {
     return (
       <>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-10">
-          <CustomTextInput
+          {/* <CustomTextInput
             value={recipeData.recipeName}
             label="Recipe Name"
             placeholder="Place the name here"
@@ -167,7 +163,7 @@ export default function RecipeEditorPage() {
                 recipeName: e.target.value,
               }));
             }}
-          />
+          /> */}
           <Select
             value={recipeData.recipeType}
             label="Recipe Type"

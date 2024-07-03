@@ -6,7 +6,7 @@ import { Container } from "blixify-ui-web/lib/components/structure/container";
 import { Text } from "blixify-ui-web/lib/components/structure/text";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import CustomHeader from "../../components/Header";
+import CustomHeader from "../components/Header";
 
 export default function RecipePage() {
   const [userName, setUserName] = useState<string>("");
@@ -44,7 +44,7 @@ export default function RecipePage() {
               text="Go to Cookbook Junction"
               type="normal"
               size="small"
-              onClick={() => router.push("/pages/home")}
+              onClick={() => router.push("/home")}
               className="my-5 w-4/5"
             />
           }

@@ -1,11 +1,11 @@
 "use client";
+import CustomHeader from "app/components/Header";
 import { HeroSection } from "blixify-ui-web/lib/components/design/heroSection";
 import { Container } from "blixify-ui-web/lib/components/structure/container";
 import { Text } from "blixify-ui-web/lib/components/structure/text";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import VisionImage from "../../../public/assets/vision.jpg";
-import CustomHeader from "../../components/Header";
+import VisionImage from "../../public/assets/vision.jpg";
 
 export default function AboutUsPage() {
   const [userName, setUserName] = useState<string>("");

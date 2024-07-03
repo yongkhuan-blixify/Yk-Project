@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { addData } from "../../../firebaseService";
+import { addData } from "../../firebaseService";
 
 export default async function handler(
   req: NextApiRequest,

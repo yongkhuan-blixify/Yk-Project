@@ -1,16 +1,22 @@
 "use client";
 import axios from "axios";
+import { TextInput } from "blixify-ui-web";
 import { Button } from "blixify-ui-web/lib/components/action/button";
 import { Grid, GridClass } from "blixify-ui-web/lib/components/display/grid";
 import { Container } from "blixify-ui-web/lib/components/structure/container";
 import { Text } from "blixify-ui-web/lib/components/structure/text";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import CustomHeader from "../../components/Header";
-import CustomTextInput from "../../components/TextInput";
+import { connect } from "react-redux";
+import { authStateInterface } from "store/reducers/authReducer";
+import CustomHeader from "../components/Header";
 import { RecipeState } from "../recipeEditor/page";
 
-export default function HomePage() {
+interface Props {
+  authStore: authStateInterface;
+}
+
+function HomePage(props: Props) {
   const router = useRouter();
   const [userName, setUserName] = useState<string>("");
 
@@ -34,9 +40,7 @@ export default function HomePage() {
     try {
       setLoading(true);
       //INFO: call the read api via this link
-      const recipeResp = await axios.get("/pages/api/read.ts");
-
-      console.log(recipeResp);
+      const recipeResp = await axios.post("/api/readAPI");
 
       setRecipeList(recipeResp.data.data);
       setLoading(false);
@@ -104,22 +108,23 @@ export default function HomePage() {
           </Text>
         </div>
         <div className="flex flex-col sm:flex-row justify-between">
-          <CustomTextInput
-            value={searchRecipe}
-            label="Search Recipe"
-            containerClassName="mt-5 sm:w-96"
-            labelClassName="text-gray-400 font-semibold"
-            inputClassName="border text-black border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:border-blue-500 transition duration-300"
-            onChange={(e) => {
-              setSearchRecipe(e.target.value);
-            }}
-          />
+          <div className="w-60">
+            <TextInput
+              containerClassName="mt-5"
+              value={searchRecipe}
+              type="text"
+              darkMode
+              label="Search Recipe"
+              placeholder="Eg. Curry Rice"
+              onChange={(e) => setSearchRecipe(e.target.value)}
+            />
+          </div>
           <div className="flex sm:mt-12 mt-5 sm:ml-5">
             <Button
               text="Create My Recipe"
               type="normal"
               size="small"
-              onClick={() => router.push("/pages/recipeEditor")}
+              onClick={() => router.push("/recipeEditor")}
               className="self-end w-full"
             />
           </div>
@@ -136,9 +141,23 @@ export default function HomePage() {
           itemClassName="shadow-md rounded"
           className="pb-20"
           size={renderRecipeGridData.length}
-          onClickData={() => router.push("/pages/recipeDetail")}
+          onClickData={() => router.push("/recipeDetail")}
         />
       </Container>
     </div>
   );
 }
+
+function App() {
+  return <CustomHomeScreen />;
+}
+
+const mapStateToProps = (state: any) => {
+  return {
+    authStore: state.authStore,
+  };
+};
+
+const CustomHomeScreen = connect(mapStateToProps)(HomePage);
+
+export default App;
