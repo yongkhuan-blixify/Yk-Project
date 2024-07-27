@@ -1,5 +1,6 @@
 "use client";
 import axios from "axios";
+import { TextInput } from "blixify-ui-web";
 import { Button } from "blixify-ui-web/lib/components/action/button";
 import { Option, Select } from "blixify-ui-web/lib/components/input/select";
 import { TextArea } from "blixify-ui-web/lib/components/input/textArea";
@@ -55,7 +56,6 @@ export default function RecipeEditorPage() {
   const [notification, setNotification] = useState<NotificationState | null>(
     null
   );
-
   const pages = [
     { name: "Cookbook Junction", href: "/home", current: false },
     { name: "Creating recipe...", href: "/recipeEditor", current: true },
@@ -168,12 +168,26 @@ export default function RecipeEditorPage() {
               }));
             }}
           /> */}
+          <TextInput
+            value={recipeData.recipeName}
+            type="text"
+            label="Search Phone"
+            placeholder="60123456789"
+            onChange={(value: string) => {
+              setRecipeData((prevState) => ({
+                ...prevState,
+                recipeName: value,
+              }));
+            }}
+            darkMode
+            containerClassName="pb-5 mt-2 w-full"
+          />
           <Select
             value={recipeData.recipeType}
             label="Recipe Type"
             options={renderRecipeTypeOption()}
             darkMode
-            containerClassName="w-full mt-2 mb-5 sm:mt-0 lg:w-60"
+            containerClassName="w-full mt-2 pb-5"
             disableKeyboard={true}
             onChange={(value: string) => {
               setRecipeData((prevState) => ({
