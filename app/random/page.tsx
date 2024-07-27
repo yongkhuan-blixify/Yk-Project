@@ -1,12 +1,17 @@
 "use client";
+import { Recipe } from "app/models/Recipe";
+import axios from "axios";
+import { Button } from "blixify-ui-web";
 import { ImageGallery } from "blixify-ui-web/lib/components/design/imageGallery";
 import { Container } from "blixify-ui-web/lib/components/structure/container";
 import { Text } from "blixify-ui-web/lib/components/structure/text";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CustomHeader from "../components/Header";
 
 export default function RandomPage() {
   const [currentImage, setCurrentImage] = useState(0);
+  const [randomRecipe, setRandomRecipe] = useState<Recipe>();
+  const [recipeList, setRecipeList] = useState([]);
 
   const images = [
     "https://images.unsplash.com/photo-1495214783159-3503fd1b572d?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
@@ -20,8 +25,34 @@ export default function RandomPage() {
     "https://images.unsplash.com/photo-1535567465397-7523840f2ae9?q=80&w=2029&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
   ];
 
+  useEffect(() => {
+    handleGetRecipeList();
+  }, []);
+
+  useEffect(() => {
+    handleGetRandomRecipe(recipeList);
+  }, [recipeList]);
+
+  useEffect(() => {
+    console.log(randomRecipe);
+  }, [randomRecipe]);
+
   const handleSetCurrentImage = (index: number) => {
     setCurrentImage(index);
+  };
+
+  const handleGetRecipeList = async () => {
+    const recipeResp = await axios.post("/api/readAPI", {
+      collectionName: "recipe",
+    });
+
+    setRecipeList(recipeResp.data.data);
+  };
+
+  const handleGetRandomRecipe = (recipes: Recipe[]) => {
+    const randomIndex = Math.floor(Math.random() * recipes.length);
+
+    setRandomRecipe(recipes[randomIndex]);
   };
 
   return (
@@ -39,17 +70,28 @@ export default function RandomPage() {
         />
       </div>
       <Container className="pb-20" bgColor="bg-black">
-        <Text size="4xl" type="h1" className="font-extrabold text-white mt-10">
-          Today Recipe
-        </Text>
+        <div className="flex flex-row justify-between">
+          <div>
+            <Text
+              size="4xl"
+              type="h1"
+              className="font-extrabold text-white mt-10"
+            >
+              Random Recipe : {randomRecipe && randomRecipe.recipeName}
+            </Text>
+          </div>
+          <div className="pt-5 w-full">
+            <Button
+              text="Refresh"
+              type="normal"
+              size="small"
+              onClick={() => {}}
+              className="my-5 w-1/5"
+            />
+          </div>
+        </div>
         <Text size="base" type="h1" className="mt-5 text-white">
-          We envision Cookbook Junction as a thriving hub where culinary
-          enthusiasts come together to celebrate the art of cooking and the joy
-          of sharing meals. Our goal is to foster a supportive environment where
-          everyone, regardless of their skill level, feels encouraged to
-          contribute and learn. By making recipe sharing free and accessible, we
-          hope to inspire creativity, promote cultural exchange, and build
-          lasting connections within our community.
+          {randomRecipe && randomRecipe.recipeIntro}
         </Text>
       </Container>
     </div>

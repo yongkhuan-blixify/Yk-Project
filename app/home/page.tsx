@@ -27,6 +27,7 @@ function HomePage(props: Props) {
   const [searchRecipe, setSearchRecipe] = useState("");
   const [recipeList, setRecipeList] = useState<RecipeState[]>([]);
 
+  //INFO: Use callback to prevent data not trigger during search
   const handleGetRecipeList = useCallback(async () => {
     try {
       setLoading(true);
