@@ -10,21 +10,31 @@ import CustomHeader from "../components/Header";
 // import { Button } from "blixify-ui-web/lib/components/action/button";
 import { InformationCircleIcon } from "@heroicons/react/24/solid";
 import CustomModal from "app/components/Modal";
+import CustomNotification, {
+  NotificationState,
+} from "app/components/Notification";
 import { RecipeState } from "app/recipeEditor/page";
+import axios from "axios";
 import { Breadcrumb } from "blixify-ui-web/lib/components/navigation/breadcrumb";
 import { Container } from "blixify-ui-web/lib/components/structure/container";
 import { Text } from "blixify-ui-web/lib/components/structure/text";
 import moment from "moment";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { connect } from "react-redux";
 import { getRecipeInfo } from "store/actions/recipeActions";
+import { authStateInterface } from "store/reducers/authReducer";
 // import { useRouter } from "next/navigation";
 
-export default function RecipeDetailPage() {
+interface Props {
+  authStore: authStateInterface;
+}
+
+function RecipeDetailPage(props: Props) {
   const searchParams = useSearchParams();
   const dataParam = searchParams?.get("id");
-  const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [savedRecipe, setSavedRecipe] = useState(false);
   const [recipeDetail, setRecipeDetail] = useState<RecipeState>({
     recipeName: "",
     recipeType: "",
@@ -36,6 +46,9 @@ export default function RecipeDetailPage() {
     createdOn: new Date(),
   });
   const [recipeNull, setRecipeNull] = useState(false);
+  const [notification, setNotification] = useState<NotificationState | null>(
+    null
+  );
   const pages = [
     { name: "Cookbook Junction", href: "/home", current: false },
     { name: "Recipe Detail", href: "#", current: true },
@@ -44,6 +57,14 @@ export default function RecipeDetailPage() {
   useEffect(() => {
     handleGetRecipeDetail(dataParam);
   }, []);
+
+  useEffect(() => {
+    if (props.authStore.user && props.authStore.user.savedRecipe) {
+      if (props.authStore.user.savedRecipe.includes(dataParam)) {
+        setSavedRecipe(true);
+      }
+    }
+  }, [props.authStore.user]);
 
   const handleGetRecipeDetail = async (id: any) => {
     setLoading(true);
@@ -55,6 +76,35 @@ export default function RecipeDetailPage() {
       } else {
         setRecipeNull(true);
       }
+      setLoading(false);
+    }
+  };
+
+  const handleSaveRecipe = async () => {
+    try {
+      setLoading(true);
+      let savedRecipeList: any = [];
+      if (props.authStore.user.savedRecipe) {
+        savedRecipeList = props.authStore.user.savedRecipe;
+      }
+
+      savedRecipeList.push(dataParam);
+
+      const response = await axios.post("/api/update", {
+        collection: "user",
+        data: { savedRecipe: savedRecipeList, id: props.authStore.user.id },
+      });
+      if (response) {
+        setNotification({
+          type: true,
+          title: "Saved Successfully",
+          msg: `Recipe has been saved to your cookbook!`,
+        });
+        setSavedRecipe(true);
+      }
+      setLoading(false);
+    } catch (err) {
+      console.log(err);
       setLoading(false);
     }
   };
@@ -121,13 +171,33 @@ export default function RecipeDetailPage() {
         darkMode
         renderContent={renderSignUpModalContent}
       />
+      <CustomNotification
+        notification={notification}
+        onClose={() => setNotification(null)}
+      />
       <Container className="pb-20" bgColor="bg-black">
         <div className="mt-10">
           <Breadcrumb pages={pages} darkMode={true} />
         </div>
-        <Text size="4xl" type="h1" className="font-extrabold text-white mt-10">
-          Recipe Detail
-        </Text>
+        <div className="sm:flex sm:justify-between">
+          <Text
+            size="4xl"
+            type="h1"
+            className="font-extrabold text-white mt-10"
+          >
+            Recipe Detail
+          </Text>
+          <Button
+            text={
+              savedRecipe ? "You have saved this recipe" : "Save This Recipe"
+            }
+            type="normal"
+            size="small"
+            disable={savedRecipe}
+            onClick={handleSaveRecipe}
+            className="self-end mt-5 sm:mt-0 w-full sm:w-2/5 md:w-1/5"
+          />
+        </div>
         <Text size="base" type="h1" className="mt-5 text-white">
           This page provides an in-depth look at each recipe, offering you all
           the information and insights you need to bring the dish to life in
@@ -146,7 +216,7 @@ export default function RecipeDetailPage() {
                 text="Go to Cookbook Junction"
                 type="normal"
                 size="small"
-                onClick={() => router.push("/home")}
+                onClick={handleSaveRecipe}
                 className="my-5 w-4/5"
               />
             }
@@ -166,3 +236,17 @@ export default function RecipeDetailPage() {
     </div>
   );
 }
+
+function App() {
+  return <CustomRecipeDetailScreen />;
+}
+
+const mapStateToProps = (state: any) => {
+  return {
+    authStore: state.authStore,
+  };
+};
+
+const CustomRecipeDetailScreen = connect(mapStateToProps)(RecipeDetailPage);
+
+export default App;

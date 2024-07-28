@@ -141,7 +141,7 @@ function HomePage(props: Props) {
               type="text"
               darkMode
               label="Search Recipe"
-              placeholder="Eg. Curry Rice"
+              placeholder="Eg. Nasi Lemak"
               onChange={(e) => setSearchRecipe(e.target.value)}
             />
           </div>

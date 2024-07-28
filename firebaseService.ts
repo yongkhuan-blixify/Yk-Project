@@ -1,4 +1,4 @@
-import { doc, setDoc } from "firebase/firestore";
+import { doc, setDoc, updateDoc } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { db as firebaseDb, storage } from "./firebaseConfig";
 
@@ -17,6 +17,21 @@ export const addData = async (
     return docRef.id;
   } catch (err) {
     console.log(err);
+  }
+};
+
+export const updateData = async (
+  collectionName: string,
+  data: any,
+  id: string
+) => {
+  try {
+    const docRef = doc(db, collectionName, id);
+    await updateDoc(docRef, data);
+    return { id, ...data };
+  } catch (error) {
+    console.error("Error updating document: ", error);
+    return null;
   }
 };
 

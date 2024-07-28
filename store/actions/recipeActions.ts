@@ -5,6 +5,7 @@ import axios from "axios";
 
 // let unsubscribeAuthListener: any = null;
 
+//INFO: NEED TO DESIGN A READ API THAT CAN PASS QUERY IN
 export const getRecipeInfo = async (id: string) => {
   try {
     const recipeInfoResp = await axios.post("/api/readAPI", {
@@ -13,5 +14,15 @@ export const getRecipeInfo = async (id: string) => {
     });
 
     return recipeInfoResp.data;
+  } catch (err) {}
+};
+
+export const getAllRecipe = async () => {
+  try {
+    const allRecipeInfoResp = await axios.post("/api/readAPI", {
+      collectionName: "recipe",
+    });
+
+    return allRecipeInfoResp.data;
   } catch (err) {}
 };
