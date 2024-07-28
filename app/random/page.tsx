@@ -1,4 +1,5 @@
 "use client";
+import BackgroundMusic from "app/components/BackgroundMusic";
 import { Recipe } from "app/models/Recipe";
 import axios from "axios";
 import { Button } from "blixify-ui-web";
@@ -58,6 +59,7 @@ export default function RandomPage() {
   return (
     <div className="bg-black w-screen h-screen">
       <CustomHeader page="Recipe of the Day" />
+
       <div>
         <ImageGallery
           imageGallery={images}
@@ -70,6 +72,11 @@ export default function RandomPage() {
         />
       </div>
       <Container className="pb-20" bgColor="bg-black">
+        {/* //INFO: No need /public */}
+        <div className=" mt-5">
+          <BackgroundMusic src="/assets/bgm.mp3" />
+        </div>
+
         <div className="flex flex-row justify-between">
           <div>
             <Text
@@ -80,15 +87,14 @@ export default function RandomPage() {
               Random Recipe : {randomRecipe && randomRecipe.recipeName}
             </Text>
           </div>
-          <div className="pt-5 w-full">
-            <Button
-              text="Refresh"
-              type="normal"
-              size="small"
-              onClick={() => {}}
-              className="my-5 w-1/5"
-            />
-          </div>
+
+          <Button
+            text="Refresh"
+            type="normal"
+            size="small"
+            onClick={() => handleGetRandomRecipe(recipeList)}
+            className="my-5 w-1/5 mt-10"
+          />
         </div>
         <Text size="base" type="h1" className="mt-5 text-white">
           {randomRecipe && randomRecipe.recipeIntro}

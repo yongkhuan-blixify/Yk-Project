@@ -24,7 +24,6 @@ import { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { getRecipeInfo } from "store/actions/recipeActions";
 import { authStateInterface } from "store/reducers/authReducer";
-// import { useRouter } from "next/navigation";
 
 interface Props {
   authStore: authStateInterface;
