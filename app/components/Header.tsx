@@ -27,6 +27,7 @@ function CustomHeader(props: Props) {
 
   const handleSignOut = async () => {
     router.push("/");
+    localStorage.removeItem("userName");
     await signOut();
   };
 

@@ -38,7 +38,11 @@ function HomePage(props: Props) {
 
       const recipeList = recipeResp.data.data
         .filter((eachRecipe: any) =>
-          searchRecipe ? eachRecipe.recipeName.includes(searchRecipe) : true
+          searchRecipe
+            ? eachRecipe.recipeName
+                .toLowerCase()
+                .includes(searchRecipe.toLowerCase())
+            : true
         )
         .map((eachRecipe: any) => ({
           id: eachRecipe.id,
@@ -163,7 +167,7 @@ function HomePage(props: Props) {
           itemClassName="shadow-md rounded"
           className="pb-20"
           size={renderRecipeGridData.length}
-          onClickData={() => router.push("/recipeDetail")}
+          onClickData={(id) => router.push(`/recipeDetail?id=${id}`)}
         />
       </Container>
     </div>

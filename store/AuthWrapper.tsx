@@ -40,6 +40,7 @@ function AuthWrapper(props: Props) {
   useEffect(() => {
     if (isLoggedIn !== null && !props.authStore.userLoading) {
       if (props.authStore.userAuth) {
+        localStorage.setItem("userName", props.authStore.user.userName);
         if (unAuthenticatedPage.includes(window.location.pathname)) {
           router.replace("/home");
         }

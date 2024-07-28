@@ -1,6 +1,7 @@
 "use client";
+import CustomModal from "app/components/Modal";
 import axios from "axios";
-import { TextInput } from "blixify-ui-web";
+import { Loading, TextInput } from "blixify-ui-web";
 import { Button } from "blixify-ui-web/lib/components/action/button";
 import { Option, Select } from "blixify-ui-web/lib/components/input/select";
 import { TextArea } from "blixify-ui-web/lib/components/input/textArea";
@@ -43,6 +44,7 @@ enum RecipeTypeOption {
 
 export default function RecipeEditorPage() {
   const [userName, setUserName] = useState<string>("");
+  const [loading, setLoading] = useState(false);
   const [recipeData, setRecipeData] = useState<RecipeState>({
     recipeName: "",
     recipeType: "",
@@ -93,48 +95,78 @@ export default function RecipeEditorPage() {
 
   const handleSubmitRecipe = async () => {
     try {
+      setLoading(true);
       if (recipeData && userName) {
-        const id = uuidv4();
-        let imageURL = "";
-
         if (
-          recipeData.recipeImage &&
-          typeof recipeData.recipeImage !== "string"
+          recipeData.recipeName !== "" ||
+          recipeData.recipeType !== "" ||
+          recipeData.recipeImage !== "" ||
+          recipeData.recipeIntro !== "" ||
+          recipeData.recipeIngredient !== "" ||
+          recipeData.recipeStep !== ""
         ) {
-          const imagePath = `recipe/${id}/${recipeData.recipeImage.name}`;
-          const uploadResult = await uploadImage(
-            recipeData.recipeImage,
-            imagePath
-          );
-          imageURL = uploadResult ? uploadResult : "";
-        } else if (typeof recipeData.recipeImage === "string") {
-          imageURL = recipeData.recipeImage;
-        }
+          const id = uuidv4();
+          let imageURL = "";
 
-        const updatedRecipeData = {
-          ...recipeData,
-          createdBy: userName,
-          recipeImage: imageURL,
-          id: id,
-        };
+          if (
+            recipeData.recipeImage &&
+            typeof recipeData.recipeImage !== "string"
+          ) {
+            const imagePath = `recipe/${id}/${recipeData.recipeImage.name}`;
+            const uploadResult = await uploadImage(
+              recipeData.recipeImage,
+              imagePath
+            );
+            imageURL = uploadResult ? uploadResult : "";
+          } else if (typeof recipeData.recipeImage === "string") {
+            imageURL = recipeData.recipeImage;
+          }
 
-        const collectionName = "recipe";
+          const updatedRecipeData = {
+            ...recipeData,
+            createdBy: userName,
+            recipeImage: imageURL,
+            id: id,
+          };
 
-        const response = await axios.post("/api/create", {
-          collection: collectionName,
-          data: updatedRecipeData,
-        });
+          const collectionName = "recipe";
 
-        if (response.data) {
-          setNotification({
-            type: true,
-            title: "Thank you for sharing your recipe!",
-            msg: `Your recipe has been published on cookbook junction`,
+          const response = await axios.post("/api/create", {
+            collection: collectionName,
+            data: updatedRecipeData,
           });
+
+          if (response.data) {
+            setNotification({
+              type: true,
+              title: "Thank you for sharing your recipe!",
+              msg: `Your recipe has been published on cookbook junction`,
+            });
+            handleClearInputData();
+            setLoading(false);
+          }
+        } else {
+          setNotification({
+            type: false,
+            title: "Submmision Rejected",
+            msg: `Please filled in all input before proceed.`,
+          });
+          setLoading(false);
         }
       }
-      handleClearInputData();
-    } catch (err) {}
+      setLoading(false);
+    } catch (err) {
+      setLoading(false);
+    }
+  };
+
+  const renderSignUpModalContent = () => {
+    return (
+      <div className="flex flex-col justify-center items-center">
+        <Loading />
+        <h1 className="mt-5 text-white">Submitting recipe...</h1>
+      </div>
+    );
   };
 
   const renderRecipeTypeOption = () => {
@@ -155,28 +187,15 @@ export default function RecipeEditorPage() {
     return (
       <>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-10">
-          {/* <CustomTextInput
+          <TextInput
             value={recipeData.recipeName}
+            type="text"
             label="Recipe Name"
-            placeholder="Place the name here"
-            labelClassName="text-white text-sm font-semibold"
-            inputClassName="border text-black border-gray-300 rounded-md px-4 py-3 focus:outline-none focus:border-blue-500 transition duration-300"
+            placeholder="Place name here"
             onChange={(e) => {
               setRecipeData((prevState) => ({
                 ...prevState,
                 recipeName: e.target.value,
-              }));
-            }}
-          /> */}
-          <TextInput
-            value={recipeData.recipeName}
-            type="text"
-            label="Search Phone"
-            placeholder="60123456789"
-            onChange={(value: string) => {
-              setRecipeData((prevState) => ({
-                ...prevState,
-                recipeName: value,
               }));
             }}
             darkMode
@@ -258,7 +277,7 @@ export default function RecipeEditorPage() {
             type="normal"
             size="small"
             onClick={handleSubmitRecipe}
-            className="my-5 w-4/5"
+            className="my-5 w-2/5 md:w-1/5"
           />
         </div>
       </>
@@ -268,6 +287,11 @@ export default function RecipeEditorPage() {
   return (
     <div className="bg-black w-screen h-screen">
       <CustomHeader page="Recipe Editor" />
+      <CustomModal
+        open={loading}
+        darkMode
+        renderContent={renderSignUpModalContent}
+      />
       <CustomNotification
         notification={notification}
         onClose={() => setNotification(null)}
