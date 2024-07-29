@@ -200,6 +200,7 @@ function HomePage(props: Props) {
         <div className="grid grid-cols-4 mt-5">
           {days.slice(0, 4).map((day) => (
             <div
+              key={day.formatted}
               className={`border border-white rounded-lg flex justify-center p-5 ${
                 day.isPast
                   ? "bg-primary-600"
@@ -215,6 +216,7 @@ function HomePage(props: Props) {
         <div className="grid grid-cols-4 ">
           {days.slice(4).map((day) => (
             <div
+              key={day.formatted}
               className={`border border-white rounded-lg flex justify-center p-5 ${
                 day.isPast
                   ? "bg-primary-600"
