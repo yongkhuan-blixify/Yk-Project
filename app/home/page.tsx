@@ -1,10 +1,15 @@
 "use client";
+import CustomModal from "app/components/Modal";
+import CustomNotification, {
+  NotificationState,
+} from "app/components/Notification";
 import axios from "axios";
-import { TextInput } from "blixify-ui-web";
+import { Loading, TextInput } from "blixify-ui-web";
 import { Button } from "blixify-ui-web/lib/components/action/button";
 import { Grid, GridClass } from "blixify-ui-web/lib/components/display/grid";
 import { Container } from "blixify-ui-web/lib/components/structure/container";
 import { Text } from "blixify-ui-web/lib/components/structure/text";
+import moment from "moment";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { connect } from "react-redux";
@@ -19,10 +24,14 @@ interface Props {
 function HomePage(props: Props) {
   const router = useRouter();
   const [userName, setUserName] = useState<string>("");
-
+  const [userLevel, setUserLevel] = useState<string>("");
+  const [dailyModal, setDailyModal] = useState(false);
   const gridLimit = 10;
-
+  const [notification, setNotification] = useState<NotificationState | null>(
+    null
+  );
   const [loading, setLoading] = useState(false);
+  const [modalLoading, setModalLoading] = useState(false);
   const [pageIndex, setPageIndex] = useState(0);
   const [searchRecipe, setSearchRecipe] = useState("");
   const [recipeList, setRecipeList] = useState<RecipeState[]>([]);
@@ -66,15 +75,34 @@ function HomePage(props: Props) {
 
   useEffect(() => {
     handleGetRecipeList();
-  }, [handleGetRecipeList]);
-
-  useEffect(() => {
-    handleGetRecipeList();
   }, [handleGetRecipeList, searchRecipe]);
 
   useEffect(() => {
-    if (props.authStore.user) setUserName(props.authStore.user?.userName);
+    if (props.authStore.user) {
+      handleCheckUserDailyLogin();
+      if (
+        props.authStore.user.experiencePoint &&
+        props.authStore.user.experiencePoint < 50
+      ) {
+        setUserLevel("Junior Chef");
+      } else if (
+        props.authStore.user.experiencePoint &&
+        props.authStore.user.experiencePoint > 50 &&
+        props.authStore.user.experiencePoint < 100
+      ) {
+        setUserLevel("Senior Chef");
+      } else {
+        setUserLevel("Master Chef");
+      }
+      setUserName(props.authStore.user?.userName);
+    }
   }, [props.authStore.user]);
+
+  const handleCheckUserDailyLogin = () => {
+    if (props.authStore.user.loginClaimed !== moment().format("DD/MM/YYYY")) {
+      setDailyModal(true);
+    }
+  };
 
   const handlePagination = (value: string | number) => {
     if (typeof value === "number") {
@@ -89,6 +117,40 @@ function HomePage(props: Props) {
       } else {
         setPageIndex(pageIndex - 1);
       }
+    }
+  };
+
+  const handleClaimExperience = async () => {
+    try {
+      setModalLoading(true);
+      let updatedPoint = 0;
+
+      if (props.authStore.user.experiencePoint) {
+        updatedPoint = props.authStore.user.experiencePoint;
+      }
+
+      updatedPoint += 10;
+
+      const response = await axios.post("/api/update", {
+        collection: "user",
+        data: {
+          loginClaimed: moment().format("DD/MM/YYYY"),
+          experiencePoint: updatedPoint,
+          id: props.authStore.user.id,
+        },
+      });
+
+      if (response) {
+        setNotification({
+          type: true,
+          title: "Claim Successfully",
+          msg: `You have claimed daily login experience for today!`,
+        });
+        setDailyModal(false);
+      }
+      setModalLoading(false);
+    } catch (err) {
+      setModalLoading(false);
     }
   };
 
@@ -114,14 +176,100 @@ function HomePage(props: Props) {
     return recipeListData;
   };
 
+  const renderDailyModalContent = () => {
+    const today = moment(); // today's date
+    const startOfWeek = today.clone().startOf("isoWeek"); // the start of the week
+    // Generate dates for the week
+    const days = Array.from({ length: 7 }).map((_, i) => {
+      const date = startOfWeek.clone().add(i, "days");
+      return {
+        formatted: date.format("dddd (D MMMM YYYY)"),
+        isPast: date.isBefore(today, "day"),
+        isToday: date.isSame(today, "day"),
+      };
+    });
+
+    return (
+      <div>
+        <h1 className="text-lg text-white">
+          Claim Your Daily Login Experience!
+        </h1>
+        <h1 className="text-xs text-gray-300 mb-5">
+          By clicking claim you will be claiming 10 experience to your account.
+        </h1>
+        <div className="grid grid-cols-4 mt-5">
+          {days.slice(0, 4).map((day, index) => (
+            <div
+              className={`border border-white rounded-lg flex justify-center p-5 ${
+                day.isPast
+                  ? "bg-primary-600"
+                  : day.isToday
+                  ? "bg-orange-500"
+                  : ""
+              }`}
+            >
+              <p className="text-white">{day.formatted}</p>
+            </div>
+          ))}
+        </div>
+        <div className="grid grid-cols-4 ">
+          {days.slice(4).map((day, index) => (
+            <div
+              className={`border border-white rounded-lg flex justify-center p-5 ${
+                day.isPast
+                  ? "bg-primary-600"
+                  : day.isToday
+                  ? "bg-orange-500"
+                  : ""
+              }`}
+            >
+              <p className="text-white">{day.formatted}</p>
+            </div>
+          ))}
+        </div>
+        <div className="flex justify-end">
+          {modalLoading ? (
+            <div className="flex justify-end">
+              <Loading />
+            </div>
+          ) : (
+            <Button
+              text="Claim"
+              type="normal"
+              size="small"
+              onClick={() => handleClaimExperience()}
+              className="my-5 w-2/5"
+            />
+          )}
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="bg-black w-screen h-screen">
       <CustomHeader page="Cookbook Junction" />
+      <CustomNotification
+        notification={notification}
+        onClose={() => setNotification(null)}
+      />
+      <CustomModal
+        open={dailyModal}
+        darkMode
+        renderContent={renderDailyModalContent}
+      />
       <Container className="my-10" bgColor="bg-black">
-        <div className="bg-indigo-500 w-fit rounded-lg mb-5">
-          <Text size="4xl" type="h1" className="font-extrabold p-3 ">
-            {userName}
-          </Text>
+        <div className="flex flex-row gap-3">
+          <div className="bg-indigo-500 w-fit rounded-lg mb-5">
+            <Text size="4xl" type="h1" className="font-extrabold p-3 ">
+              {userName}
+            </Text>
+          </div>
+          <div className="bg-orange-500 w-fit rounded-lg mb-5">
+            <Text size="4xl" type="h1" className="font-extrabold p-3 ">
+              {userLevel}
+            </Text>
+          </div>
         </div>
         <Text size="4xl" type="h1" className="font-extrabold text-white">
           Welcome To Cookbook Junction
