@@ -1,10 +1,11 @@
 "use client";
+import { QuestionMarkCircleIcon } from "@heroicons/react/24/solid";
 import CustomModal from "app/components/Modal";
 import CustomNotification, {
   NotificationState,
 } from "app/components/Notification";
 import axios from "axios";
-import { Loading, TextInput } from "blixify-ui-web";
+import { InfoWindow, Loading, TextInput } from "blixify-ui-web";
 import { Button } from "blixify-ui-web/lib/components/action/button";
 import { Grid, GridClass } from "blixify-ui-web/lib/components/display/grid";
 import { Container } from "blixify-ui-web/lib/components/structure/container";
@@ -35,6 +36,10 @@ function HomePage(props: Props) {
   const [pageIndex, setPageIndex] = useState(0);
   const [searchRecipe, setSearchRecipe] = useState("");
   const [recipeList, setRecipeList] = useState<RecipeState[]>([]);
+
+  const infoWindowClassName =
+    "w-60 h-50 border-2 border-white bg-black p-3 rounded-lg";
+  const iconClassName = "h-6 w-6 text-white-400";
 
   //INFO: Use callback to prevent data not trigger during search
   const handleGetRecipeList = useCallback(async () => {
@@ -80,20 +85,21 @@ function HomePage(props: Props) {
   useEffect(() => {
     if (props.authStore.user) {
       handleCheckUserDailyLogin();
-      if (
-        props.authStore.user.experiencePoint &&
-        props.authStore.user.experiencePoint < 50
-      ) {
-        setUserLevel("Junior Chef");
-      } else if (
-        props.authStore.user.experiencePoint &&
-        props.authStore.user.experiencePoint > 50 &&
-        props.authStore.user.experiencePoint < 100
-      ) {
-        setUserLevel("Senior Chef");
+      if (props.authStore.user.experiencePoint) {
+        if (props.authStore.user.experiencePoint < 50) {
+          setUserLevel("Junior Chef");
+        } else if (
+          props.authStore.user.experiencePoint > 50 &&
+          props.authStore.user.experiencePoint < 100
+        ) {
+          setUserLevel("Senior Chef");
+        } else if (props.authStore.user.experiencePoint > 100) {
+          setUserLevel("Master Chef");
+        }
       } else {
-        setUserLevel("Master Chef");
+        setUserLevel("Junior Chef");
       }
+
       setUserName(props.authStore.user?.userName);
     }
   }, [props.authStore.user]);
@@ -267,10 +273,32 @@ function HomePage(props: Props) {
               {userName}
             </Text>
           </div>
-          <div className="bg-orange-500 w-fit rounded-lg mb-5">
+          <div className="bg-orange-500 w-fit flex flex-row rounded-lg mb-5">
             <Text size="4xl" type="h1" className="font-extrabold p-3 ">
               {userLevel}
             </Text>
+            <div className="flex self-center mr-2 ">
+              <InfoWindow
+                type="right"
+                content={
+                  <div className={infoWindowClassName}>
+                    <p className="text-white text-sm font-semibold">
+                      Perks Info:
+                    </p>
+                    <p className="text-white text-xs mt-2">
+                      Less than 50 point: Junior Chef
+                    </p>
+                    <p className="text-white text-xs my-1">
+                      More than 50 point: Senior Chef
+                    </p>
+                    <p className="text-white text-xs mb-2">
+                      More than 100 point: Master Chef
+                    </p>
+                  </div>
+                }
+                icon={<QuestionMarkCircleIcon className={iconClassName} />}
+              />
+            </div>
           </div>
         </div>
         <Text size="4xl" type="h1" className="font-extrabold text-white">
