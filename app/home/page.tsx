@@ -198,7 +198,7 @@ function HomePage(props: Props) {
           By clicking claim you will be claiming 10 experience to your account.
         </h1>
         <div className="grid grid-cols-4 mt-5">
-          {days.slice(0, 4).map((day, index) => (
+          {days.slice(0, 4).map((day) => (
             <div
               className={`border border-white rounded-lg flex justify-center p-5 ${
                 day.isPast
@@ -213,7 +213,7 @@ function HomePage(props: Props) {
           ))}
         </div>
         <div className="grid grid-cols-4 ">
-          {days.slice(4).map((day, index) => (
+          {days.slice(4).map((day) => (
             <div
               className={`border border-white rounded-lg flex justify-center p-5 ${
                 day.isPast
