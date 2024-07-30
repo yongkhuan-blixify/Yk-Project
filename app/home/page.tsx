@@ -294,6 +294,10 @@ function HomePage(props: Props) {
                     <p className="text-white text-xs mb-2">
                       More than 100 point: Master Chef
                     </p>
+                    <p className="text-white font-semibold text-xs mb-2">
+                      My current point:{" "}
+                      {props.authStore.user.experiencePoint ?? 0}
+                    </p>
                   </div>
                 }
                 icon={<QuestionMarkCircleIcon className={iconClassName} />}
