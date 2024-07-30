@@ -296,7 +296,10 @@ function HomePage(props: Props) {
                     </p>
                     <p className="text-white font-semibold text-xs mb-2">
                       My current point:{" "}
-                      {props.authStore.user.experiencePoint ?? 0}
+                      {props.authStore.user &&
+                      props.authStore.user.experiencePoint
+                        ? props.authStore.user.experiencePoint
+                        : 0}
                     </p>
                   </div>
                 }

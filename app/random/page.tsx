@@ -90,7 +90,7 @@ function RandomPage(props: Props) {
         }
       } else {
         setNotification({
-          type: true,
+          type: false,
           title: "Recipe Existed",
           msg: `You have already saved this recipe to your cookbook.`,
         });

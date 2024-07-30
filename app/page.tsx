@@ -271,7 +271,7 @@ export default function Home() {
           renderContent={renderSignUpModalContent}
         />
         <Container className="my-10 pb-10" bgColor="bg-black">
-          <div className="flex justify-between">
+          <div className="flex justify-between px-10">
             <div>
               <Text size="4xl" type="h1" className="font-extrabold text-white">
                 A Cookbook for Everyone, by Everyone
